@@ -1,8 +1,6 @@
 import React from 'react';
 import ColorBoxes from './ColorBoxes';
-// import classes from './Box.css';
-// import Controls from './BuildControls/Controls';
-// import Aux from '../hoc/Auxilary';
+
 
 const page = (props) => {
     let dynamicboxes = Object.keys(props.ingredients)
