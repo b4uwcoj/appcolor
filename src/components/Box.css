@@ -1,6 +1,7 @@
 
 .Div {
-    height: 65vh;
+    margin-top: 70px;
+    height: 60%;
     width: 100%;
     display: flex;
     justify-content:center;

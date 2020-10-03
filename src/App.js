@@ -6,6 +6,7 @@ import classes from './components/Box.css';
 import Modal from './components/Modal';
 import Summary from './components/Summary';
 import Toolbar from './components/Navigation/Toolbar/Toolbar';
+import SideDrawer from './components/SideDrawer';
 
 const INGREDIENT_PRICES = {
   box2: 0.5,
@@ -93,6 +94,7 @@ class App extends Component {
     return (
       <Aux>
         <Toolbar />
+        <SideDrawer />
         <Modal show={this.state.purchasing} modalClosed={this.purchaseCancleHandler}>
           <Summary 
           ingredients={this.state.ingredients}
