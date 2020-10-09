@@ -26,7 +26,8 @@ class App extends Component {
     },
     totalPrice: 4,
     purchasable: false,
-    purchasing: false
+    purchasing: false,
+    showSideDrawer: false
   }
 
     updatePurchaseState(ingredients) {
@@ -84,6 +85,16 @@ class App extends Component {
     alert('You Continue!');
   }
 
+  sideDrawerClosedHandler = () => {
+    this.setState({showSideDrawer: false});
+  }
+
+  sideDrawerToggleHandler = () => {
+    this.setState((prevState) => {
+      return {showSideDrawer: !prevState.showSideDrawer};
+    });
+  }
+
   render() {
     const disableInfo = {
       ...this.state.ingredients
@@ -93,14 +104,16 @@ class App extends Component {
     }
     return (
       <Aux>
-        <Toolbar />
-        <SideDrawer />
+        <Toolbar drawerToggleClicked={this.sideDrawerToggleHandler} />
+        <SideDrawer 
+          open={this.state.showSideDrawer} 
+          closed={this.sideDrawerClosedHandler} />
         <Modal show={this.state.purchasing} modalClosed={this.purchaseCancleHandler}>
           <Summary 
-          ingredients={this.state.ingredients}
-          purchaseCancled={this.purchaseCancleHandler}
-          purchaseContinued={this.purchaseContinueHandler}
-          price={this.state.totalPrice} />
+            ingredients={this.state.ingredients}
+            purchaseCancled={this.purchaseCancleHandler}
+            purchaseContinued={this.purchaseContinueHandler}
+            price={this.state.totalPrice} />
         </Modal>
         <div className={classes.Div2}>
           <div className={classes.Div}>
