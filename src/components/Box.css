@@ -11,21 +11,20 @@
 }
 
 .Color {
-    height: 0vh;
     width: 50%;
-    margin-top: 0%;
     margin-left: 25%;
 }
 
 .Div2 {
-    height: 100vh;
+    height: 100%;
     width: 100%;
-    position: relative;
+    position: fixed;
 }
 
 .Text {
-    top: 0px;
-    left: 25px;
+    top: 50px;
+    left: 0px;
+    font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
     margin: 15px;
     position: absolute;
 
