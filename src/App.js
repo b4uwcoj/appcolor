@@ -7,6 +7,9 @@ import Modal from './components/Modal';
 import Summary from './components/Summary';
 import Toolbar from './components/Navigation/Toolbar/Toolbar';
 import SideDrawer from './components/SideDrawer';
+import axios from './components/axios-orders';
+import Spinner from './components/Spinner';
+import WithErrorHandler from './components/withErrorHandler';
 
 const INGREDIENT_PRICES = {
   box2: 0.5,
@@ -27,8 +30,16 @@ class App extends Component {
     totalPrice: 4,
     purchasable: false,
     purchasing: false,
-    showSideDrawer: false
+    showSideDrawer: false,
+    loading: false
   }
+
+    componentDidMount () {
+      axios.get('https://colorburger.firebaseio.com/ingredients.json')
+        .then(response => {
+          this.setState({ingredients: response.data})
+        });
+    }
 
     updatePurchaseState(ingredients) {
       const sum = Object.keys(ingredients)
@@ -82,7 +93,28 @@ class App extends Component {
   }
 
   purchaseContinueHandler = () => {
-    alert('You Continue!');
+    this.setState({loading:true});
+    const order = {
+      ingredients: this.state.ingredients,
+      price: this.state.totalPrice,
+      customer: {
+        name: 'Max Schwarcmuller',
+        address: {
+          street: 'Teststreet 1',
+          zipCode: '654654',
+          country: 'Germany'
+        },
+        email: 'test@test.com'
+      },
+      deliveryMethod: 'fastest'
+    }
+    axios.post('/orders.json', order)
+      .then(response => {
+        this.setState({loading:false, purchasing:false})
+      })
+      .catch(error => {
+        this.setState({loading:false, purchasing:false})
+      });
   }
 
   sideDrawerClosedHandler = () => {
@@ -102,6 +134,19 @@ class App extends Component {
     for (let key in disableInfo) {
       disableInfo[key] = disableInfo[key] <= 0
     }
+
+    let orderSummary = <Summary 
+            ingredients={this.state.ingredients}
+            purchaseCancled={this.purchaseCancleHandler}
+            purchaseContinued={this.purchaseContinueHandler}
+            price={this.state.totalPrice} />;
+
+    if (this.state.loading) {
+      orderSummary = <Spinner />;
+    }
+
+    // let burger = 
+
     return (
       <Aux>
         <Toolbar drawerToggleClicked={this.sideDrawerToggleHandler} />
@@ -109,11 +154,7 @@ class App extends Component {
           open={this.state.showSideDrawer} 
           closed={this.sideDrawerClosedHandler} />
         <Modal show={this.state.purchasing} modalClosed={this.purchaseCancleHandler}>
-          <Summary 
-            ingredients={this.state.ingredients}
-            purchaseCancled={this.purchaseCancleHandler}
-            purchaseContinued={this.purchaseContinueHandler}
-            price={this.state.totalPrice} />
+          {orderSummary}
         </Modal>
         <div className={classes.Div2}>
           <div className={classes.Div}>
@@ -137,4 +178,4 @@ class App extends Component {
   }
 }
 
-export default App;
+export default WithErrorHandler(App, axios);
