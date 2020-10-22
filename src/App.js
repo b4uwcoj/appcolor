@@ -21,24 +21,24 @@ const INGREDIENT_PRICES = {
 class App extends Component {
 
   state = {
-    ingredients: {
-      box2: 0,
-      box3: 0,
-      box4: 0,
-      box5: 0
-    },
+    ingredients: null,
     totalPrice: 4,
     purchasable: false,
     purchasing: false,
     showSideDrawer: false,
-    loading: false
+    loading: false,
+    error: false
   }
 
     componentDidMount () {
       axios.get('https://colorburger.firebaseio.com/ingredients.json')
         .then(response => {
           this.setState({ingredients: response.data})
+        })
+        .catch(error => {
+          this.setState({error: true})
         });
+        
     }
 
     updatePurchaseState(ingredients) {
@@ -135,28 +135,12 @@ class App extends Component {
       disableInfo[key] = disableInfo[key] <= 0
     }
 
-    let orderSummary = <Summary 
-            ingredients={this.state.ingredients}
-            purchaseCancled={this.purchaseCancleHandler}
-            purchaseContinued={this.purchaseContinueHandler}
-            price={this.state.totalPrice} />;
+    let orderSummary= null;
 
-    if (this.state.loading) {
-      orderSummary = <Spinner />;
-    }
+    let burger = this.state.error ? <p>Can't load colors!</p> : <Spinner />;
 
-    // let burger = 
-
-    return (
-      <Aux>
-        <Toolbar drawerToggleClicked={this.sideDrawerToggleHandler} />
-        <SideDrawer 
-          open={this.state.showSideDrawer} 
-          closed={this.sideDrawerClosedHandler} />
-        <Modal show={this.state.purchasing} modalClosed={this.purchaseCancleHandler}>
-          {orderSummary}
-        </Modal>
-        <div className={classes.Div2}>
+    if(this.state.ingredients) {
+      burger = <div className={classes.Div2}>
           <div className={classes.Div}>
             <Box ingredients={this.state.ingredients} />
           </div>
@@ -172,7 +156,29 @@ class App extends Component {
           <div className={classes.Text}>
             <p>TEXT TEXT TEXT</p>
           </div>
-        </div>
+        </div>;
+
+      orderSummary = <Summary 
+        ingredients={this.state.ingredients}
+        purchaseCancled={this.purchaseCancleHandler}
+        purchaseContinued={this.purchaseContinueHandler}
+        price={this.state.totalPrice} />;
+    }
+    
+    if (this.state.loading) {
+      orderSummary = <Spinner />;
+    }
+
+    return (
+      <Aux>
+        <Toolbar drawerToggleClicked={this.sideDrawerToggleHandler} />
+        <SideDrawer 
+          open={this.state.showSideDrawer} 
+          closed={this.sideDrawerClosedHandler} />
+        <Modal show={this.state.purchasing} modalClosed={this.purchaseCancleHandler}>
+          {orderSummary}
+        </Modal>
+          {burger}
       </Aux>
     );
   }
