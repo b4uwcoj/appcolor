@@ -27,18 +27,17 @@ class App extends Component {
     purchasing: false,
     showSideDrawer: false,
     loading: false,
-    error: false
+    error: false,
   }
 
     componentDidMount () {
       axios.get('https://colorburger.firebaseio.com/ingredients.json')
         .then(response => {
-          this.setState({ingredients: response.data})
+          this.setState({ingredients: response.data});
         })
         .catch(error => {
-          this.setState({error: true})
+          this.setState({error: true});
         });
-        
     }
 
     updatePurchaseState(ingredients) {
@@ -169,7 +168,7 @@ class App extends Component {
       orderSummary = <Spinner />;
     }
 
-    return (
+    const colorBuilder = 
       <Aux>
         <Toolbar drawerToggleClicked={this.sideDrawerToggleHandler} />
         <SideDrawer 
@@ -179,6 +178,11 @@ class App extends Component {
           {orderSummary}
         </Modal>
           {burger}
+      </Aux>;
+      
+    return (
+      <Aux>
+        {colorBuilder}
       </Aux>
     );
   }
